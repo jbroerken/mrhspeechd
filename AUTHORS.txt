@@ -1,0 +1,7 @@
+###
+#
+#  mrhspeechd Authors
+#
+###
+
+Jens Brörken <jens.broerken@icloud.com>
