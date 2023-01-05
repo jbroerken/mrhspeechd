@@ -35,7 +35,7 @@
 
 // Pre-defined
 #ifndef MRH_SPEECHD_PID_FILE_PATH
-    #define MRH_SPEECHD_PID_FILE_PATH "/tmp/mrh/mrhpeechd_PID"
+    #define MRH_SPEECHD_PID_FILE_PATH "/tmp/mrh/PID_mrhspeechd"
 #endif
 #ifndef MRH_SPEECHD_DAEMON_MODE
     #define MRH_SPEECHD_DAEMON_MODE 0
@@ -248,6 +248,9 @@ int main(int argc, const char* argv[])
         // Are we connected to the service
         if (p_Stream->IsConnected() == false)
         {
+            c_Logger.Log(Logger::INFO, "Not connected, stopping recording.",
+                         "Main.cpp", __LINE__);
+
             p_Recorder->Stop(); // No reason to record if we cannot send
             continue;
         }
@@ -255,11 +258,17 @@ int main(int argc, const char* argv[])
         // Is there somethning to play?
         if (p_Stream->GetAvailable() == true)
         {
+            c_Logger.Log(Logger::INFO, "Playback message available, stopping recording.",
+                         "Main.cpp", __LINE__);
+
             // Stop recording, playback
             p_Recorder->Stop();
 
             try
             {
+                c_Logger.Log(Logger::INFO, "Creating and starting output playback.",
+                             "Main.cpp", __LINE__);
+
                 AudioBuffer c_Buffer(0);
                 std::string s_String = p_Stream->GetMessage();
 
@@ -279,6 +288,9 @@ int main(int argc, const char* argv[])
         {
             try
             {
+                c_Logger.Log(Logger::INFO, "Reading and creating input message.",
+                             "Main.cpp", __LINE__);
+
                 AudioBuffer c_Buffer(0);
                 std::string s_String("");
 
@@ -297,16 +309,25 @@ int main(int argc, const char* argv[])
         // Was a recording signal received?
         if (i_LastSignal == MRH_SPEECHD_SIGNAL_STOP_RECORDING)
         {
+            c_Logger.Log(Logger::INFO, "Recording stop signal received.",
+                         "Main.cpp", __LINE__);
+
             p_Recorder->Stop();
             i_LastSignal = -1;
         }
         else if (i_LastSignal == MRH_SPEECHD_SIGNAL_START_RECORDING)
         {
+            c_Logger.Log(Logger::INFO, "Recording start signal received.",
+                         "Main.cpp", __LINE__);
+
             // Only works while not recording or playing!
             if (p_Player->GetPlaying() == false && p_Recorder->GetRecording() == false)
             {
                 try
                 {
+                    c_Logger.Log(Logger::INFO, "Starting to record.",
+                                 "Main.cpp", __LINE__);
+
                     p_Recorder->Start(true);
                 }
                 catch (Exception& e)
