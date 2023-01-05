@@ -4,6 +4,12 @@ Google Cloud API Configuration
 The Google Cloud API is used to transcribe speech input and synthesize speech 
 output.
 
+.. important::
+
+    The Google Cloud Services Configuration is loaded from the default 
+    location, found at **~/.config/gcloud/application_default_credentials.json**
+
+
 GoogleCloudTTS Block
 --------------------
 The GoogleCloudTTS block stores the following values:
