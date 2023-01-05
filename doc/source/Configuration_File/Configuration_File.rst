@@ -51,7 +51,7 @@ The API block stores the following values:
     * - Recording
       - The recording API to use.
     * - Playback
-      - The recording KHz.
+      - The playback API to use.
     * - SpeechCheck
       - The audio speech check API to use.
     * - TTS

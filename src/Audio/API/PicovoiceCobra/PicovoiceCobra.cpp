@@ -87,7 +87,7 @@ bool PicovoiceCobra::IsSpeech(AudioBuffer::AudioChunk const& v_Chunk)
     float f32_Confidence;
     size_t us_Pos = 0;
 
-    while (true)
+    while (us_Pos < us_SampleCount)
     {
         // Cobra wants a specific sample rate
         int32_t s32_RequiredSamples = pv_cobra_frame_length();
@@ -122,9 +122,14 @@ bool PicovoiceCobra::IsSpeech(AudioBuffer::AudioChunk const& v_Chunk)
 
         if (f32_Confidence >= f32_MinConfidence)
         {
+            PICOVOICE_COBRA_LOG("Speech recognized!");
             return true;
         }
 
         us_Pos += s32_RequiredSamples;
     }
+
+    // Default
+    PICOVOICE_COBRA_LOG("No speech recognized in buffer!");
+    return false;
 }

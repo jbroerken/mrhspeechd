@@ -24,7 +24,7 @@
 #include "./ChunkVolume.h"
 
 // Pre-defined
-#if CHUNK_VOLUME_LOG_EXTENDED > 1
+#if CHUNK_VOLUME_LOG_EXTENDED > 0
     #define CHUNK_VOLUME_LOG(X) Logger::Singleton().Log(Logger::INFO, X, "ChunkVolume.cpp", __LINE__)
 #else
     #define CHUNK_VOLUME_LOG(X)

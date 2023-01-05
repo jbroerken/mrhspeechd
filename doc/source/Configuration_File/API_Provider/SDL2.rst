@@ -19,6 +19,9 @@ The SDL2Recorder block stores the following values:
       - The KHz to record in.
     * - SamplesPerFrame
       - The number of samples for each recording frame.
+    * - TrailingFrameSize
+      - The number of samples appended if speech has ended before
+        recording stops.
 
 
 SDL2Player Block

@@ -112,7 +112,6 @@ private:
     SDL2RecordingContext* p_Context;
 
     std::string s_DeviceName;
-    MRH_Uint32 u32_KHz;
     MRH_Uint32 u32_SamplesPerFrame;
     
 protected:

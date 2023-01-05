@@ -23,6 +23,7 @@
 #include "./SDL2Player.h"
 
 // Pre-defined
+#define SDL2_PLAYER_LOG_EXTENDED 1
 #if SDL2_PLAYER_LOG_EXTENDED > 0
     #define SDL2_PLAYER_LOG(X) Logger::Singleton().Log(Logger::INFO, X, "SDL2Player.cpp", __LINE__)
 #else
@@ -107,10 +108,18 @@ void SDL2Player::Start(AudioBuffer& c_Buffer)
             throw Exception("Failed to get wanted playback format!");
         }
 
-        Logger::Singleton().Log(Logger::INFO, "Opened playback device " +
-                                              (s_DeviceName.size() > 0 ? s_DeviceName : "<Default>") +
-                                              ".",
-                                "SDL2Player.cpp", __LINE__);
+        if (s_DeviceName.compare(MRH_SDL2_DEFAULT_DEVICE_NAME) == 0)
+        {
+            Logger::Singleton().Log(Logger::INFO, "Opened system default playback device.",
+                                    "SDL2Player.cpp", __LINE__);
+        }
+        else
+        {
+            Logger::Singleton().Log(Logger::INFO, "Opened playback device " +
+                                                  s_DeviceName +
+                                                  ".",
+                                    "SDL2Player.cpp", __LINE__);
+        }
     }
 
     // Start playback
@@ -147,6 +156,8 @@ void SDL2Player::Callback(void* p_Context, Uint8* p_Stream, int i_Length) noexce
     // Anything left to play?
     if (p_SDL2Context->c_Buffer.GetChunkCount() == 0)
     {
+        SDL2_PLAYER_LOG("No playable chunks remain, stopping playback.");
+
         // Zero buffer
         memset(p_Stream, 0, i_Length);
 
@@ -155,6 +166,10 @@ void SDL2Player::Callback(void* p_Context, Uint8* p_Stream, int i_Length) noexce
         SDL_PauseAudioDevice(p_SDL2Context->u32_DeviceID, 1);
         return;
     }
+
+    SDL2_PLAYER_LOG("Playback requested " +
+                    std::to_string(i_Length) +
+                    " bytes.");
 
     // Audio remains, copy
     AudioBuffer::AudioChunk v_Chunk;
@@ -165,19 +180,32 @@ void SDL2Player::Callback(void* p_Context, Uint8* p_Stream, int i_Length) noexce
         // Get first
         if (p_SDL2Context->c_Buffer.Retrieve(v_Chunk) == false)
         {
+            SDL2_PLAYER_LOG("No playable chunks remain, zeroing remaining stream.");
+
             // No audio left, zero and return
             memset(&(p_Stream[us_Written]), 0, (i_Length - us_Written));
             return;
         }
+        else if (v_Chunk.empty() == true)
+        {
+            SDL2_PLAYER_LOG("Empty chunk received from playback buffer!");
+            continue;
+        }
 
         // Get the size required to fill the buffer
-        size_t us_ChunkSize = v_Chunk.size();
+        size_t us_ChunkSize = v_Chunk.size() * sizeof(MRH_Sint16); // Bytes!
         size_t us_ToWrite = i_Length - us_Written;
 
         if (us_ChunkSize < us_ToWrite)
         {
             us_ToWrite = us_ChunkSize;
         }
+
+        SDL2_PLAYER_LOG("Writing " +
+                        std::to_string(us_ToWrite) +
+                        " sample bytes from chunk with byte size " +
+                        std::to_string(us_ChunkSize) +
+                        " to stream.");
 
         // Copy to buffer
         memcpy(&(p_Stream[us_Written]), &(v_Chunk[0]), us_ToWrite);
@@ -188,7 +216,11 @@ void SDL2Player::Callback(void* p_Context, Uint8* p_Stream, int i_Length) noexce
         // Re-add remaining buffer?
         if (us_ToWrite < us_ChunkSize)
         {
-            v_Chunk.erase(v_Chunk.begin() + us_ToWrite);
+            SDL2_PLAYER_LOG("Readding chunk with byte size " +
+                            std::to_string((us_ChunkSize - us_ToWrite)) +
+                            " to buffer.");
+
+            v_Chunk.erase(v_Chunk.begin() + (us_ToWrite / sizeof(MRH_Sint16)));
             p_SDL2Context->c_Buffer.Add(v_Chunk, true);
         }
     }

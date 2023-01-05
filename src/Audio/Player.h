@@ -105,9 +105,9 @@ protected:
 
     Player(std::string const& s_Identifier) noexcept : s_Identifier(s_Identifier)
     {
-        Logger::Singleton().Log(Logger::INFO, "Created " +
+        Logger::Singleton().Log(Logger::INFO, "Created [ " +
                                               s_Identifier +
-                                              " player API.",
+                                              " ] player API.",
                                 "Player.h", __LINE__);
     }
 };

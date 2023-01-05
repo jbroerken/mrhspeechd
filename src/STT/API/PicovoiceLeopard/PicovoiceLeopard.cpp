@@ -23,7 +23,7 @@
 #include "./PicovoiceLeopard.h"
 
 // Pre-defined
-#if PICOVOICE_LEOPARD_LOG_EXTENDED > 1
+#if PICOVOICE_LEOPARD_LOG_EXTENDED > 0
     #define PICOVOICE_LEOPARD_LOG(X) Logger::Singleton().Log(Logger::INFO, X, "PicovoiceLeopards.cpp", __LINE__)
 #else
     #define PICOVOICE_LEOPARD_LOG(X)

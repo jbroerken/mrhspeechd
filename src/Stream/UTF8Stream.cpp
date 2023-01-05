@@ -355,7 +355,11 @@ void UTF8Stream::Write(std::string const& s_Message)
 {
     if (i_FD < 0)
     {
-        throw Exception("Cannot write messages while not connected!");
+        throw Exception("Cannot write message while not connected!");
+    }
+    else if (s_Message.empty() == true)
+    {
+        throw Exception("Attempted to write empty message!");
     }
     
     size_t us_Total = s_Message.size() + 1; // Write terminator as well if possible!

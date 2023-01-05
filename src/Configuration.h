@@ -69,6 +69,7 @@ public:
         std::string s_DeviceName = "null";
         MRH_Uint32 u32_KHz = 16000;
         MRH_Uint32 u32_SamplesPerFrame = 2048;
+        MRH_Uint32 u32_TrailingFrameSize = 32000;
     };
 #endif
 

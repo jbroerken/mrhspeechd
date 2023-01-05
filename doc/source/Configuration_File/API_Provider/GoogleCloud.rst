@@ -14,7 +14,7 @@ The GoogleCloudTTS block stores the following values:
     * - Key
       - Description
     * - LanguageCode
-      - The language code used for synthesizing output.
+      - The BCP-47 language code used for synthesizing output.
     * - VoiceGender
       - 0 for female, 1 for male.
     * - KHz

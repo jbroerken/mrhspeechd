@@ -128,9 +128,9 @@ protected:
              std::shared_ptr<RecorderContext>& p_Context) noexcept : s_Identifier(s_Identifier),
                                                                      p_Context(p_Context)
     {
-        Logger::Singleton().Log(Logger::INFO, "Created " +
+        Logger::Singleton().Log(Logger::INFO, "Created [ " +
                                               s_Identifier +
-                                              " recorder API.",
+                                              " ] recorder API.",
                                 "Recorder.h", __LINE__);
     }
 

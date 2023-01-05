@@ -15,7 +15,7 @@ The PicovoiceCobra block stores the following values:
     * - AccessKeyPath
       - The full path to the picovoice access key to use.
     * - MinConfidence
-      - The minimum confidence required to recognize speech.
+      - The minimum confidence in percent required to recognize speech.
         
         
 Example

@@ -46,6 +46,9 @@
 // Namespace
 namespace
 {
+    // Notifier
+    std::shared_ptr<DataNotifier> p_Notifier((DataNotifier*)NULL);
+
     // Last signal
     int i_LastSignal = -1;
 }
@@ -74,9 +77,14 @@ extern "C"
             case SIGTERM:
             case SIGINT:
             case SIGHUP:
+                i_LastSignal = i_Signal;
+                p_Notifier->Notify(true);
+                break;
+
             case MRH_SPEECHD_SIGNAL_START_RECORDING:
             case MRH_SPEECHD_SIGNAL_STOP_RECORDING:
                 i_LastSignal = i_Signal;
+                p_Notifier->Notify(false);
                 break;
                 
             default:
@@ -202,7 +210,11 @@ int main(int argc, const char* argv[])
     }
 
     // Create components
-    std::shared_ptr<DataNotifier> p_Notifier;
+    c_Logger.Log(Logger::INFO, "Creating components...",
+                 "Main.cpp", __LINE__);
+
+    Configuration c_Configuration;
+
     std::shared_ptr<SpeechChecker> p_SpeechChecker;
     std::shared_ptr<Recorder> p_Recorder;
     std::shared_ptr<Player> p_Player;
@@ -212,7 +224,9 @@ int main(int argc, const char* argv[])
 
     try
     {
-        Configuration c_Configuration;
+        CreateAudioAPI::Init(c_Configuration);
+        CreateTTSAPI::Init(c_Configuration);
+        CreateTTSAPI::Init(c_Configuration);
 
         p_Notifier = std::make_shared<DataNotifier>();
         p_SpeechChecker = CreateAudioAPI::CreateSpeechChecker(c_Configuration);
@@ -240,10 +254,21 @@ int main(int argc, const char* argv[])
     }
 
     // Handle audio
-    while (i_LastSignal != SIGTERM)
+    while (true)
     {
         // Wait for notifications
         p_Notifier->Wait();
+
+        c_Logger.Log(Logger::INFO, "Notified about new data!",
+                     "Main.cpp", __LINE__);
+
+        // Stop?
+        if (i_LastSignal == SIGTERM)
+        {
+            c_Logger.Log(Logger::INFO, "Shutdown signal received!",
+                         "Main.cpp", __LINE__);
+            break;
+        }
 
         // Are we connected to the service
         if (p_Stream->IsConnected() == false)
@@ -258,12 +283,6 @@ int main(int argc, const char* argv[])
         // Is there somethning to play?
         if (p_Stream->GetAvailable() == true)
         {
-            c_Logger.Log(Logger::INFO, "Playback message available, stopping recording.",
-                         "Main.cpp", __LINE__);
-
-            // Stop recording, playback
-            p_Recorder->Stop();
-
             try
             {
                 c_Logger.Log(Logger::INFO, "Creating and starting output playback.",
@@ -273,7 +292,10 @@ int main(int argc, const char* argv[])
                 std::string s_String = p_Stream->GetMessage();
 
                 p_TTS->Synthesize(s_String, c_Buffer);
+
+                // Start playback and stop recording
                 p_Player->Start(c_Buffer);
+                p_Recorder->Stop();
             }
             catch (Exception& e)
             {
@@ -281,31 +303,10 @@ int main(int argc, const char* argv[])
                                             e.what2(),
                              "Main.cpp", __LINE__);
             }
+
+            continue;
         }
-
-        // Was audio recorded to transcribe?
-        if (p_Recorder->GetSpeechRecorded() == true && p_Recorder->GetRecording() == false)
-        {
-            try
-            {
-                c_Logger.Log(Logger::INFO, "Reading and creating input message.",
-                             "Main.cpp", __LINE__);
-
-                AudioBuffer c_Buffer(0);
-                std::string s_String("");
-
-                p_Recorder->GetRecordedAudio(c_Buffer);
-                p_STT->Transcribe(c_Buffer, s_String);
-                p_Stream->Write(s_String);
-            }
-            catch (Exception& e)
-            {
-                c_Logger.Log(Logger::ERROR, "Failed to handle input: " +
-                                            e.what2(),
-                             "Main.cpp", __LINE__);
-            }
-        }
-
+        
         // Was a recording signal received?
         if (i_LastSignal == MRH_SPEECHD_SIGNAL_STOP_RECORDING)
         {
@@ -314,6 +315,8 @@ int main(int argc, const char* argv[])
 
             p_Recorder->Stop();
             i_LastSignal = -1;
+
+            continue;
         }
         else if (i_LastSignal == MRH_SPEECHD_SIGNAL_START_RECORDING)
         {
@@ -339,10 +342,43 @@ int main(int argc, const char* argv[])
             }
 
             i_LastSignal = -1;
+
+            continue;
+        }
+
+        // Was audio recorded to transcribe?
+        // @NOTE: No playback check, finished recordings can be retrieved while playing!
+        if (p_Recorder->GetSpeechRecorded() == true && p_Recorder->GetRecording() == false)
+        {
+            try
+            {
+                c_Logger.Log(Logger::INFO, "Reading and creating input message.",
+                             "Main.cpp", __LINE__);
+
+                AudioBuffer c_Buffer(0);
+                std::string s_String("");
+
+                p_Recorder->GetRecordedAudio(c_Buffer);
+                p_STT->Transcribe(c_Buffer, s_String);
+                p_Stream->Write(s_String);
+            }
+            catch (Exception& e)
+            {
+                c_Logger.Log(Logger::ERROR, "Failed to handle input: " +
+                                            e.what2(),
+                             "Main.cpp", __LINE__);
+            }
         }
     }
     
     // Finished
+    c_Logger.Log(Logger::INFO, "Exit, cleaning up...",
+                 "Main.cpp", __LINE__);
+
+    CreateAudioAPI::Destroy(c_Configuration);
+    CreateTTSAPI::Destroy(c_Configuration);
+    CreateTTSAPI::Destroy(c_Configuration);
+
     c_Logger.Log(Logger::INFO, "mrhspeechd finished.",
                  "Main.cpp", __LINE__);
     

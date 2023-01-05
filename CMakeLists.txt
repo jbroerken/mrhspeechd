@@ -28,10 +28,10 @@ set(CMAKE_CXX_STANDARD 14)
 #  Options to use when building with CMake.
 ###
 option(AUDIO_API_SDL2 "Enable recording and playback with SDL2" ON)
-option(AUDIO_API_PICOVOICE_COBRA "Enable speech recognition with Picovoice Cobra" OFF)
+option(AUDIO_API_PICOVOICE_COBRA "Enable speech recognition with Picovoice Cobra" ON)
 
 option(STT_API_GOOGLE_CLOUD "Enable speech to text conversion with Google Cloud" ON)
-option(STT_API_PICOVOICE_LEOPARD "Enable speech to text conversion with Picovoice Cobra" OFF)
+option(STT_API_PICOVOICE_LEOPARD "Enable speech to text conversion with Picovoice Leopard" OFF)
 
 option(TTS_API_GOOGLE_CLOUD "Enable text to speech conversion with Google Cloud" ON)
 

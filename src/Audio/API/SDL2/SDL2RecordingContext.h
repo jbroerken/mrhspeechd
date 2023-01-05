@@ -39,11 +39,16 @@ public:
     /**
      *  Default constructor.
      *
+     *  \param u32_KHz The recording KHz.
+     *  \param u32_TrailingFrameSizeMax The amount of samples allowed to append with no speech.
      *  \param p_Context The recorder context to manage.
      */
 
-    SDL2RecordingContext(std::shared_ptr<RecorderContext>& p_Context) noexcept : c_Buffer(0),
-                                                                                 u32_NoSpeechSamples(0),
+    SDL2RecordingContext(MRH_Uint32 u32_KHz,
+                         MRH_Uint32 u32_TrailingFrameSizeMax,
+                         std::shared_ptr<RecorderContext>& p_Context) noexcept : c_Buffer(u32_KHz),
+                                                                                 u32_TrailingFrameSizeCurrent(0),
+                                                                                 u32_TrailingFrameSizeMax(u32_TrailingFrameSizeMax),
                                                                                  u32_DeviceID(MRH_SDL2_AUDIO_DEVICE_ID_INVALID),
                                                                                  p_Context(p_Context)
     {}
@@ -53,7 +58,8 @@ public:
     //*************************************************************************************
 
     AudioBuffer c_Buffer;
-    MRH_Uint32 u32_NoSpeechSamples;
+    MRH_Uint32 u32_TrailingFrameSizeCurrent;
+    MRH_Uint32 u32_TrailingFrameSizeMax;
 
     SDL_AudioDeviceID u32_DeviceID;
 

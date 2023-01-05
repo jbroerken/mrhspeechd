@@ -38,10 +38,11 @@ SDL2Recorder::SDL2Recorder(Configuration::SDL2Recorder const& c_Configuration,
                            std::shared_ptr<RecorderContext>& p_Context) : Recorder("SDL2 Recorder",
                                                                                    p_Context),
                                                                           s_DeviceName(c_Configuration.s_DeviceName),
-                                                                          u32_KHz(c_Configuration.u32_KHz),
                                                                           u32_SamplesPerFrame(c_Configuration.u32_SamplesPerFrame)
 {
-    this->p_Context = new SDL2RecordingContext(p_Context);
+    this->p_Context = new SDL2RecordingContext(c_Configuration.u32_KHz,
+                                               c_Configuration.u32_TrailingFrameSize,
+                                               p_Context);
 }
 
 SDL2Recorder::~SDL2Recorder() noexcept
@@ -76,6 +77,7 @@ void SDL2Recorder::Start(bool b_Clear)
 
     // Flag context
     p_Context->p_Context->b_SpeechRecorded = false;
+    p_Context->u32_TrailingFrameSizeCurrent = 0;
 
     // Open playback device if needed
     if (p_Context->u32_DeviceID == MRH_SDL2_AUDIO_DEVICE_ID_INVALID)
@@ -102,11 +104,11 @@ void SDL2Recorder::Start(bool b_Clear)
 
         if (s_DeviceName.compare(MRH_SDL2_DEFAULT_DEVICE_NAME) == 0)
         {
-            p_Context->u32_DeviceID = SDL_OpenAudioDevice(NULL, 1, &c_Want, &c_Have, 0);
+            p_Context->u32_DeviceID = SDL_OpenAudioDevice(NULL, 1, &c_Want, &c_Have, SDL_AUDIO_ALLOW_SAMPLES_CHANGE);
         }
         else
         {
-            p_Context->u32_DeviceID = SDL_OpenAudioDevice(s_DeviceName.c_str(), 1, &c_Want, &c_Have, 0);
+            p_Context->u32_DeviceID = SDL_OpenAudioDevice(s_DeviceName.c_str(), 1, &c_Want, &c_Have, SDL_AUDIO_ALLOW_SAMPLES_CHANGE);
         }
 
         if (p_Context->u32_DeviceID == 0)
@@ -121,11 +123,24 @@ void SDL2Recorder::Start(bool b_Clear)
 
             throw Exception("Failed to get wanted recording format!");
         }
+        else if (c_Have.samples != c_Want.samples)
+        {
+            Logger::Singleton().Log(Logger::WARNING, "Sample rate changed by SDL2!",
+                                    "SDL2Recorder.cpp", __LINE__);
+        }
 
-        Logger::Singleton().Log(Logger::INFO, "Opened recording device " +
-                                              (s_DeviceName.size() > 0 ? s_DeviceName : "<Default>") +
-                                              ".",
-                                "SDL2Recorder.cpp", __LINE__);
+        if (s_DeviceName.compare(MRH_SDL2_DEFAULT_DEVICE_NAME) == 0)
+        {
+            Logger::Singleton().Log(Logger::INFO, "Opened system default recording device.",
+                                    "SDL2Recorder.cpp", __LINE__);
+        }
+        else
+        {
+            Logger::Singleton().Log(Logger::INFO, "Opened recording device " +
+                                                  s_DeviceName +
+                                                  ".",
+                                    "SDL2Recorder.cpp", __LINE__);
+        }
     }
 
     // Start recording
@@ -172,10 +187,12 @@ void SDL2Recorder::Callback(void* p_Context, Uint8* p_Stream, int i_Length) noex
 
     if (p_SDL2Context->p_Context->p_SpeechChecker->IsSpeech(v_Chunk) == true)
     {
+        SDL2_RECORDER_LOG("Speech recognized, adding chunk and resetting trailing sample count.");
+
         p_SDL2Context->c_Buffer.Add(v_Chunk, false);
 
         p_SDL2Context->p_Context->b_SpeechRecorded = true;
-        p_SDL2Context->u32_NoSpeechSamples = 0; // Reset, audio found again
+        p_SDL2Context->u32_TrailingFrameSizeCurrent = 0; // Reset, audio found again
 
         return;
     }
@@ -185,16 +202,24 @@ void SDL2Recorder::Callback(void* p_Context, Uint8* p_Stream, int i_Length) noex
         return;
     }
 
-    // Add length of chunk
-    p_SDL2Context->u32_NoSpeechSamples += us_Length;
-
-    // Max reached? (1 sec)
-    if (p_SDL2Context->u32_NoSpeechSamples < p_SDL2Context->c_Buffer.GetKHz())
+    // Add trailing frames?
+    if (p_SDL2Context->u32_TrailingFrameSizeCurrent < p_SDL2Context->u32_TrailingFrameSizeMax)
     {
+        p_SDL2Context->c_Buffer.Add(v_Chunk, false);
+
+        p_SDL2Context->u32_TrailingFrameSizeCurrent += us_Length;
+
+        SDL2_RECORDER_LOG("No speech found, add " +
+                          std::to_string(us_Length) +
+                          " trailing samples (now " +
+                          std::to_string(p_SDL2Context->u32_TrailingFrameSizeCurrent) +
+                          ")");
         return;
     }
 
     // Ending, pause recording and notfy of audio
+    SDL2_RECORDER_LOG("Recording finished, notifying...");
+
     SDL_PauseAudioDevice(p_SDL2Context->u32_DeviceID, 1);
 
     p_SDL2Context->p_Context->p_Notifier->Notify(false);

@@ -84,9 +84,9 @@ protected:
 
     TTS(std::string const& s_Identifier) noexcept : s_Identifier(s_Identifier)
     {
-        Logger::Singleton().Log(Logger::INFO, "Created " +
+        Logger::Singleton().Log(Logger::INFO, "Created [ " +
                                               s_Identifier +
-                                              " TTS API.",
+                                              " ] TTS API.",
                                 "TTS.h", __LINE__);
     }
 };

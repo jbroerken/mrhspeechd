@@ -85,9 +85,9 @@ protected:
 
     STT(std::string const& s_Identifier) noexcept : s_Identifier(s_Identifier)
     {
-        Logger::Singleton().Log(Logger::INFO, "Created " +
+        Logger::Singleton().Log(Logger::INFO, "Created [ " +
                                               s_Identifier +
-                                              " STT API.",
+                                              " ] STT API.",
                                 "STT.h", __LINE__);
     }
 
@@ -121,8 +121,8 @@ protected:
             else if (v_Audio.size() < (us_Pos + us_Size))
             {
                 v_Audio.insert(v_Audio.end(),
-                               0,
-                               ((us_Pos + us_Size) - v_Audio.size()));
+                               ((us_Pos + us_Size) - v_Audio.size()),
+                               0);
             }
 
             memcpy(&(v_Audio[us_Pos]),

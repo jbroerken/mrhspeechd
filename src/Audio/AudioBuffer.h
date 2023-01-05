@@ -175,15 +175,13 @@ public:
 
     bool Retrieve(AudioChunk& v_Chunk) noexcept
     {
-        if (this->dq_Chunk.empty() == true)
+        if (dq_Chunk.empty() == true)
         {
             return false;
         }
 
-        auto& Current = this->dq_Chunk.front();
-
-        Current.swap(v_Chunk);
-        Current.clear();
+        dq_Chunk.front().swap(v_Chunk);
+        dq_Chunk.pop_front();
 
         return true;
     }

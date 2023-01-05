@@ -25,7 +25,7 @@
 #include "./GoogleCloudSTT.h"
 
 // Pre-defined
-#if GOOGLE_CLOUD_STT_LOG_EXTENDED > 1
+#if GOOGLE_CLOUD_STT_LOG_EXTENDED > 0
     #define GOOGLE_CLOUD_STT_LOG(X) Logger::Singleton().Log(Logger::INFO, X, "GoogleCloudSTT.cpp", __LINE__)
 #else
     #define GOOGLE_CLOUD_STT_LOG(X)
@@ -57,6 +57,10 @@ GoogleCloudSTT::~GoogleCloudSTT() noexcept
 
 void GoogleCloudSTT::Transcribe(AudioBuffer& c_Buffer, std::string& s_String)
 {
+    printf("-> TEST: REPLACE");
+    s_String = "version";
+    return;
+
     // Create full buffer
     size_t us_SampleCount = PrepareAudio(c_Buffer);
 
@@ -67,7 +71,19 @@ void GoogleCloudSTT::Transcribe(AudioBuffer& c_Buffer, std::string& s_String)
 
     GOOGLE_CLOUD_STT_LOG("Transcribing audio with " +
                          std::to_string(us_SampleCount) +
-                         " samples.");
+                         " samples, " +
+                         std::to_string(c_Buffer.GetKHz()) +
+                         " KHz.");
+
+    // DEBUG: WRITE AUDIO
+    FILE* p_File = fopen("/home/mrh/recv.raw", "wb");
+
+    if (fwrite(v_Audio.data(), 2, us_SampleCount, p_File) != us_SampleCount)
+    {
+        printf("->WARNING: WRITE RRR!\n");
+    }
+
+    fclose(p_File);
 
     /**
      *  Credentials Setup

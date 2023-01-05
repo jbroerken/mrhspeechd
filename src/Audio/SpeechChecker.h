@@ -85,9 +85,9 @@ protected:
 
     SpeechChecker(std::string const& s_Identifier) noexcept : s_Identifier(s_Identifier)
     {
-        Logger::Singleton().Log(Logger::INFO, "Created " +
+        Logger::Singleton().Log(Logger::INFO, "Created [ " +
                                               s_Identifier +
-                                              " speech checker API.",
+                                              " ] speech checker API.",
                                 "SpeechChecker.h", __LINE__);
     }
 };

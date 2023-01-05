@@ -25,7 +25,7 @@
 #include "./GoogleCloudTTS.h"
 
 // Pre-defined
-#if GOOGLE_CLOUD_TTS_LOG_EXTENDED > 1
+#if GOOGLE_CLOUD_TTS_LOG_EXTENDED > 0
     #define GOOGLE_CLOUD_TTS_LOG(X) Logger::Singleton().Log(Logger::INFO, X, "GoogleCloudTTS.cpp", __LINE__)
 #else
     #define GOOGLE_CLOUD_TTS_LOG(X)
