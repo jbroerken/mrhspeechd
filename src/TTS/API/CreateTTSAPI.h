@@ -18,6 +18,7 @@
 #define CreateTTSAPI_h
 
 // C / C++
+#include <memory>
 
 // External
 

@@ -18,6 +18,7 @@
 #define CreateSTTAPI_h
 
 // C / C++
+#include <memory>
 
 // External
 

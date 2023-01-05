@@ -142,6 +142,6 @@ void GoogleCloudSTT::Transcribe(AudioBuffer& c_Buffer, std::string& s_String)
 
     s_String = s_Transcipt;
 
-    PICOVOICE_LEOPARD_LOG("Transcription result: " +
-                          s_String);
+    GOOGLE_CLOUD_STT_LOG("Transcription result: " +
+                         s_String);
 }

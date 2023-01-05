@@ -111,10 +111,10 @@ if(AUDIO_API_SDL2 MATCHES ON)
     set(SRC_LIST_AUDIO ${SRC_LIST_AUDIO}
                        "${SRC_DIR_PATH}/Audio/API/SDL2/SDL2Recorder.cpp"
                        "${SRC_DIR_PATH}/Audio/API/SDL2/SDL2Recorder.h"
-                       "${SRC_DIR_PATH}/Audio/API/SDL2/SDL2RecorderContext.h"
+                       "${SRC_DIR_PATH}/Audio/API/SDL2/SDL2RecordingContext.h"
                        "${SRC_DIR_PATH}/Audio/API/SDL2/SDL2Player.cpp"
                        "${SRC_DIR_PATH}/Audio/API/SDL2/SDL2Player.h"
-                       "${SRC_DIR_PATH}/Audio/API/SDL2/SDL2PlayerContext.h"
+                       "${SRC_DIR_PATH}/Audio/API/SDL2/SDL2PlaybackContext.h"
                        "${SRC_DIR_PATH}/Audio/API/SDL2/SDL2Device.h")
 endif()
 

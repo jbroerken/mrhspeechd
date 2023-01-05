@@ -18,6 +18,7 @@
 #define STT_h
 
 // C / C++
+#include <cstring>
 
 // External
 
