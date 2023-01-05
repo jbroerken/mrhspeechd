@@ -46,9 +46,11 @@ public:
 
     SDL2RecordingContext(MRH_Uint32 u32_KHz,
                          MRH_Uint32 u32_TrailingFrameSizeMax,
+                         MRH_Sfloat32 f32_Amplification,
                          std::shared_ptr<RecorderContext>& p_Context) noexcept : c_Buffer(u32_KHz),
                                                                                  u32_TrailingFrameSizeCurrent(0),
                                                                                  u32_TrailingFrameSizeMax(u32_TrailingFrameSizeMax),
+                                                                                 f32_Amplification(f32_Amplification),
                                                                                  u32_DeviceID(MRH_SDL2_AUDIO_DEVICE_ID_INVALID),
                                                                                  p_Context(p_Context)
     {}
@@ -58,8 +60,11 @@ public:
     //*************************************************************************************
 
     AudioBuffer c_Buffer;
+
     MRH_Uint32 u32_TrailingFrameSizeCurrent;
     MRH_Uint32 u32_TrailingFrameSizeMax;
+
+    MRH_Sfloat32 f32_Amplification;
 
     SDL_AudioDeviceID u32_DeviceID;
 

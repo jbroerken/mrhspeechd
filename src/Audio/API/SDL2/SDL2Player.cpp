@@ -23,7 +23,6 @@
 #include "./SDL2Player.h"
 
 // Pre-defined
-#define SDL2_PLAYER_LOG_EXTENDED 1
 #if SDL2_PLAYER_LOG_EXTENDED > 0
     #define SDL2_PLAYER_LOG(X) Logger::Singleton().Log(Logger::INFO, X, "SDL2Player.cpp", __LINE__)
 #else

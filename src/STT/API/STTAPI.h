@@ -33,7 +33,7 @@
  */
 
 #ifndef MRH_SPEECHD_STT_API_GGOGLE_CLOUD
-    #define MRH_SPEECHD_STT_API_GGOGLE_CLOUD 1//0
+    #define MRH_SPEECHD_STT_API_GGOGLE_CLOUD 0
 #endif
 
 /**
@@ -41,7 +41,7 @@
  */
 
 #ifndef MRH_SPEECHD_STT_API_PICOVOICE_LEOPARD
-    #define MRH_SPEECHD_STT_API_PICOVOICE_LEOPARD 1//0
+    #define MRH_SPEECHD_STT_API_PICOVOICE_LEOPARD 0
 #endif
 
 //*************************************************************************************

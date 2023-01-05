@@ -59,6 +59,7 @@ namespace
         SDL2_RECORDER_KHZ,
         SDL2_RECORDER_SAMPLES_PER_FRAME,
         SDL2_RECORDER_TRAILING_FRAME_SIZE,
+        SDL2_RECORDER_AMPLIFICATION,
 
         // SDL2 Player Key
         SDL2_PLAYER_DEVICE_NAME,
@@ -120,6 +121,7 @@ namespace
         "KHz",
         "SamplesPerFrame",
         "TrailingFrameSize",
+        "Amplification",
 
         // SDL2 Player Key
         "DeviceName",
@@ -199,6 +201,7 @@ Configuration::Configuration() noexcept
                 c_SDL2Recorder.u32_KHz = static_cast<MRH_Uint32>(std::stoull(Block.GetValue(p_Identifier[SDL2_RECORDER_KHZ])));
                 c_SDL2Recorder.u32_SamplesPerFrame = static_cast<MRH_Uint32>(std::stoull(Block.GetValue(p_Identifier[SDL2_RECORDER_SAMPLES_PER_FRAME])));
                 c_SDL2Recorder.u32_TrailingFrameSize = static_cast<MRH_Uint32>(std::stoull(Block.GetValue(p_Identifier[SDL2_RECORDER_TRAILING_FRAME_SIZE])));
+                c_SDL2Recorder.f32_Amplification = std::stof(Block.GetValue(p_Identifier[SDL2_RECORDER_AMPLIFICATION]));
 
                 continue;
             }

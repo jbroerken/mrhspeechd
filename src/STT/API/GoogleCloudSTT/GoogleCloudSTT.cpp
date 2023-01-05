@@ -57,10 +57,6 @@ GoogleCloudSTT::~GoogleCloudSTT() noexcept
 
 void GoogleCloudSTT::Transcribe(AudioBuffer& c_Buffer, std::string& s_String)
 {
-    printf("-> TEST: REPLACE");
-    s_String = "version";
-    return;
-
     // Create full buffer
     size_t us_SampleCount = PrepareAudio(c_Buffer);
 
@@ -74,16 +70,6 @@ void GoogleCloudSTT::Transcribe(AudioBuffer& c_Buffer, std::string& s_String)
                          " samples, " +
                          std::to_string(c_Buffer.GetKHz()) +
                          " KHz.");
-
-    // DEBUG: WRITE AUDIO
-    FILE* p_File = fopen("/home/mrh/recv.raw", "wb");
-
-    if (fwrite(v_Audio.data(), 2, us_SampleCount, p_File) != us_SampleCount)
-    {
-        printf("->WARNING: WRITE RRR!\n");
-    }
-
-    fclose(p_File);
 
     /**
      *  Credentials Setup

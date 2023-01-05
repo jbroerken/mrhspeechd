@@ -33,7 +33,7 @@
  */
 
 #ifndef MRH_SPEECHD_SOUND_IO_API_SDL2
-    #define MRH_SPEECHD_SOUND_IO_API_SDL2 1//0
+    #define MRH_SPEECHD_SOUND_IO_API_SDL2 0
 #endif
 
 //*************************************************************************************
@@ -45,7 +45,7 @@
  */
 
 #ifndef MRH_SPEECHD_SPEECH_CHECKER_API_PICOVOICE_COBRA
-    #define MRH_SPEECHD_SPEECH_CHECKER_API_PICOVOICE_COBRA 1//0
+    #define MRH_SPEECHD_SPEECH_CHECKER_API_PICOVOICE_COBRA 0
 #endif
 
 //*************************************************************************************

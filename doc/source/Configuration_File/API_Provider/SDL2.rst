@@ -22,6 +22,8 @@ The SDL2Recorder block stores the following values:
     * - TrailingFrameSize
       - The number of samples appended if speech has ended before
         recording stops.
+    * - Amplification
+      - The percentage with which the recorded audio should be amplified.
 
 
 SDL2Player Block
@@ -51,6 +53,7 @@ configuration file:
         <DeviceName><null>
         <KHz><16000>
         <SamplesPerFrame><2048>
+        <Amplification><1.0>
     }
 
     <SDL2Player>{

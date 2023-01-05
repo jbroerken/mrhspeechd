@@ -42,6 +42,7 @@ SDL2Recorder::SDL2Recorder(Configuration::SDL2Recorder const& c_Configuration,
 {
     this->p_Context = new SDL2RecordingContext(c_Configuration.u32_KHz,
                                                c_Configuration.u32_TrailingFrameSize,
+                                               c_Configuration.f32_Amplification,
                                                p_Context);
 }
 
@@ -136,7 +137,7 @@ void SDL2Recorder::Start(bool b_Clear)
         }
         else
         {
-            Logger::Singleton().Log(Logger::INFO, "Opened recording device " +
+            Logger::Singleton().Log(Logger::INFO, "Opened recording device: " +
                                                   s_DeviceName +
                                                   ".",
                                     "SDL2Recorder.cpp", __LINE__);
@@ -184,6 +185,28 @@ void SDL2Recorder::Callback(void* p_Context, Uint8* p_Stream, int i_Length) noex
 
     AudioBuffer::AudioChunk v_Chunk(p_Audio,
                                     p_Audio + us_Length);
+
+    SDL2_RECORDER_LOG("Amplifying recorded samples by " +
+                      std::to_string(p_SDL2Context->f32_Amplification) +
+                      ".");
+
+    for (auto& Sample : v_Chunk)
+    {
+        MRH_Sint32 s32_Sample = Sample * p_SDL2Context->f32_Amplification;
+
+        if (s32_Sample > INT16_MAX)
+        {
+            Sample = INT16_MAX;
+        }
+        else if (s32_Sample < INT16_MIN)
+        {
+            Sample = INT16_MIN;
+        }
+        else
+        {
+            Sample = static_cast<MRH_Sint16>(s32_Sample);
+        }
+    }
 
     if (p_SDL2Context->p_Context->p_SpeechChecker->IsSpeech(v_Chunk) == true)
     {

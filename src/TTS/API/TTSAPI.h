@@ -33,7 +33,7 @@
  */
 
 #ifndef MRH_SPEECHD_TTS_API_GGOGLE_CLOUD
-    #define MRH_SPEECHD_TTS_API_GGOGLE_CLOUD 1//0
+    #define MRH_SPEECHD_TTS_API_GGOGLE_CLOUD 0
 #endif
 
 //*************************************************************************************

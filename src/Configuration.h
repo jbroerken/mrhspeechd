@@ -70,6 +70,7 @@ public:
         MRH_Uint32 u32_KHz = 16000;
         MRH_Uint32 u32_SamplesPerFrame = 2048;
         MRH_Uint32 u32_TrailingFrameSize = 32000;
+        MRH_Sfloat32 f32_Amplification = 1.f;
     };
 #endif
 
