@@ -31,6 +31,11 @@
 #include "./UTF8Stream.h"
 #include "../Logger.h"
 
+// Pre-defined
+#ifndef MRH_SPEECHD_CONNECT_WAIT_S
+    #define MRH_SPEECHD_CONNECT_WAIT_S 5
+#endif
+
 
 //*************************************************************************************
 // Constructor / Destructor
@@ -97,6 +102,8 @@ void UTF8Stream::Connect()
 
     if (connect(i_FD, (struct sockaddr*)&c_Address, us_AddressLength) < 0)
     {
+        close(i_FD);
+        
         throw Exception("Could not connect to socket: " +
                         std::string(std::strerror(errno)) +
                         " (" +
@@ -236,6 +243,14 @@ void UTF8Stream::Read(UTF8Stream* p_Instance) noexcept
 
         if (p_Instance->i_FD < 0)
         {
+            // Wait before connecting, so that socket spawns
+            std::this_thread::sleep_for(std::chrono::seconds(MRH_SPEECHD_CONNECT_WAIT_S));
+
+            c_Logger.Log(Logger::INFO, "Attempting to connect to socket " +
+                                       p_Instance->s_SocketPath +
+                                       "...",
+                         "UTF8Stream.cpp", __LINE__);
+
             // Attempt to connect
             try
             {
