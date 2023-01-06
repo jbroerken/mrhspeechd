@@ -62,11 +62,11 @@ bool ChunkVolume::IsSpeech(AudioBuffer::AudioChunk const& v_Chunk)
     size_t us_RequiredSamples = (size_t)((float)(v_Chunk.size()) * f32_MinSamples);
     size_t us_MatchingSamples = 0;
 
-    for (auto& Sample : v_Chunk)
+    for (auto const& Sample : v_Chunk)
     {
         if (Sample >= u16_MinVolume)
         {
-            us_SampleCount += 1;
+            us_MatchingSamples += 1;
         }
     }
 
@@ -76,7 +76,7 @@ bool ChunkVolume::IsSpeech(AudioBuffer::AudioChunk const& v_Chunk)
     }
 
     CHUNK_VOLUME_LOG("Found " +
-                     std::to_string(us_SampleCount) +
+                     std::to_string(us_MatchingSamples) +
                      " matching samples, " +
                      std::to_string(us_RequiredSamples) +
                      " are required.");

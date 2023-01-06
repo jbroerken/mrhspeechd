@@ -208,15 +208,24 @@ void SDL2Recorder::Callback(void* p_Context, Uint8* p_Stream, int i_Length) noex
         }
     }
 
-    if (p_SDL2Context->p_Context->p_SpeechChecker->IsSpeech(v_Chunk) == true)
+    try
     {
-        SDL2_RECORDER_LOG("Speech recognized, adding chunk and resetting trailing sample count.");
+        if (p_SDL2Context->p_Context->p_SpeechChecker->IsSpeech(v_Chunk) == true)
+        {
+            SDL2_RECORDER_LOG("Speech recognized, adding chunk and resetting trailing sample count.");
 
-        p_SDL2Context->c_Buffer.Add(v_Chunk, false);
+            p_SDL2Context->c_Buffer.Add(v_Chunk, false);
 
-        p_SDL2Context->p_Context->b_SpeechRecorded = true;
-        p_SDL2Context->u32_TrailingFrameSizeCurrent = 0; // Reset, audio found again
+            p_SDL2Context->p_Context->b_SpeechRecorded = true;
+            p_SDL2Context->u32_TrailingFrameSizeCurrent = 0; // Reset, audio found again
 
+            return;
+        }
+    }
+    catch (Exception& e)
+    {
+        Logger::Singleton().Log(Logger::ERROR, e.what(),
+                                "SDL2Recorder.cpp", __LINE__);
         return;
     }
 

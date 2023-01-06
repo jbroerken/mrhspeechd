@@ -52,7 +52,19 @@ public:
      */
 
     AudioBuffer(MRH_Uint32 u32_KHz,
-                std::deque<AudioChunk> dq_Chunk = {}) noexcept
+                std::deque<AudioChunk> const& dq_Chunk = {}) noexcept : u32_KHz(u32_KHz),
+                                                                        dq_Chunk(dq_Chunk)
+    {}
+
+    /**
+     *  Consume constructor.
+     *
+     *  \param u32_KHz The KHz of the audio stored.
+     *  \param dq_Chunk The initial audio chunks. The deque is consumed.
+     */
+
+    AudioBuffer(MRH_Uint32 u32_KHz,
+                std::deque<AudioChunk>& dq_Chunk) noexcept
     {
         Reset(u32_KHz, dq_Chunk);
     }
@@ -75,7 +87,7 @@ public:
      *  \param dq_Chunk The initial audio chunks.
      */
 
-    void Reset(MRH_Uint32 u32_KHz, std::deque<AudioChunk> dq_Chunk = {}) noexcept
+    void Reset(MRH_Uint32 u32_KHz, std::deque<AudioChunk>& dq_Chunk) noexcept
     {
         this->u32_KHz = u32_KHz;
         this->dq_Chunk.swap(dq_Chunk);
