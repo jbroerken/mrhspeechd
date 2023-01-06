@@ -20,7 +20,6 @@
 // C / C++
 
 // External
-#include <libmrhvt/String/MRH_LocalisedPath.h>
 #include <pv_leopard.h>
 
 // Project

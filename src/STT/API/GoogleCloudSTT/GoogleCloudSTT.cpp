@@ -15,11 +15,13 @@
  */
 
 // C / C++
+#include <fstream>
 
 // External
 #include <google/cloud/speech/v1/cloud_speech.grpc.pb.h>
 #include <google/longrunning/operations.grpc.pb.h>
 #include <grpcpp/grpcpp.h>
+#include <libmrhvt/String/MRH_LocalisedPath.h>
 
 // Project
 #include "./GoogleCloudSTT.h"
@@ -44,9 +46,26 @@ using google::cloud::speech::v1::StreamingRecognitionResult;
 // Constructor / Destructor
 //*************************************************************************************
 
-GoogleCloudSTT::GoogleCloudSTT(Configuration::GoogleCloudSTT const& c_Configuration) noexcept : STT("Google Cloud API STT"),
-                                                                                                s_LanguageCode(c_Configuration.s_LanguageCode)
-{}
+GoogleCloudSTT::GoogleCloudSTT(Configuration::GoogleCloudSTT const& c_Configuration) : STT("Google Cloud API STT"),
+                                                                                       s_LanguageCode("")
+{
+    std::string s_LocaleFilePath = MRH::VT::LocalisedPath::GetPath(c_Configuration.s_BCPDirPath, c_Configuration.s_BCPFileName);
+    std::ifstream f_File(s_LocaleFilePath);
+
+    if (f_File.is_open() == false)
+    {
+        throw Exception("Failed to open " +
+                        s_LocaleFilePath +
+                        " STT BCP-47 locale file!");
+    }
+
+    getline(f_File, s_LanguageCode);
+    f_File.close();
+
+    Logger::Singleton().Log(Logger::INFO, "Set Google Cloud API STT locale to " +
+                                          s_LanguageCode,
+                            "GoogleCloudSTT.cpp", __LINE__);
+}
 
 GoogleCloudSTT::~GoogleCloudSTT() noexcept
 {}

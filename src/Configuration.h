@@ -111,7 +111,8 @@ public:
 #if MRH_SPEECHD_TTS_API_GGOGLE_CLOUD > 0
     struct GoogleCloudTTS
     {
-        std::string s_LanguageCode = "en";
+        std::string s_BCPDirPath = "/usr/share/mrh/speechd/gcloud/";
+        std::string s_BCPFileName = "locale.conf";
         MRH_Uint8 u8_VoiceGender = 0;
         MRH_Uint32 u32_KHz = 16000;
         MRH_Uint32 u32_ChunkSamples = 2048;
@@ -125,7 +126,8 @@ public:
 #if MRH_SPEECHD_STT_API_GGOGLE_CLOUD > 0
     struct GoogleCloudSTT
     {
-        std::string s_LanguageCode = "en";
+        std::string s_BCPDirPath = "/usr/share/mrh/speechd/gcloud/";
+        std::string s_BCPFileName = "locale.conf";
     };
 #endif
 

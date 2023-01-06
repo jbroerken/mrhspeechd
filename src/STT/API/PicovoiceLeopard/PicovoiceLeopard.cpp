@@ -18,6 +18,7 @@
 #include <fstream>
 
 // External
+#include <libmrhvt/String/MRH_LocalisedPath.h>
 
 // Project
 #include "./PicovoiceLeopard.h"

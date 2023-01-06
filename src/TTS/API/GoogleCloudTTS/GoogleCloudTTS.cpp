@@ -15,11 +15,13 @@
  */
 
 // C / C++
+#include <fstream>
 
 // External
 #include <google/cloud/texttospeech/v1/cloud_tts.grpc.pb.h>
 #include <google/longrunning/operations.grpc.pb.h>
 #include <grpcpp/grpcpp.h>
+#include <libmrhvt/String/MRH_LocalisedPath.h>
 
 // Project
 #include "./GoogleCloudTTS.h"
@@ -44,12 +46,29 @@ using google::cloud::texttospeech::v1::SsmlVoiceGender;
 // Constructor / Destructor
 //*************************************************************************************
 
-GoogleCloudTTS::GoogleCloudTTS(Configuration::GoogleCloudTTS const& c_Configuration) noexcept : TTS("Google Cloud API TTS"),
-                                                                                                s_LanguageCode(c_Configuration.s_LanguageCode),
-                                                                                                u8_VoiceGender(c_Configuration.u8_VoiceGender),
-                                                                                                u32_KHz(c_Configuration.u32_KHz),
-                                                                                                u32_ChunkSamples(c_Configuration.u32_ChunkSamples)
-{}
+GoogleCloudTTS::GoogleCloudTTS(Configuration::GoogleCloudTTS const& c_Configuration) : TTS("Google Cloud API TTS"),
+                                                                                       s_LanguageCode(""),
+                                                                                       u8_VoiceGender(c_Configuration.u8_VoiceGender),
+                                                                                       u32_KHz(c_Configuration.u32_KHz),
+                                                                                       u32_ChunkSamples(c_Configuration.u32_ChunkSamples)
+{
+    std::string s_LocaleFilePath = MRH::VT::LocalisedPath::GetPath(c_Configuration.s_BCPDirPath, c_Configuration.s_BCPFileName);
+    std::ifstream f_File(s_LocaleFilePath);
+
+    if (f_File.is_open() == false)
+    {
+        throw Exception("Failed to open " +
+                        s_LocaleFilePath +
+                        " TTS BCP-47 locale file!");
+    }
+
+    getline(f_File, s_LanguageCode);
+    f_File.close();
+
+    Logger::Singleton().Log(Logger::INFO, "Set Google Cloud API TTS locale to " +
+                                          s_LanguageCode,
+                            "GoogleCloudTTS.cpp", __LINE__);
+}
 
 GoogleCloudTTS::~GoogleCloudTTS() noexcept
 {}

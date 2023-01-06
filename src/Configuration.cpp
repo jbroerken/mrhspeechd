@@ -74,13 +74,15 @@ namespace
         PICOVOICE_COBRA_MIN_CONFIDENCE,
 
         // Google Cloud TTS Key
-        GOOGLE_CLOUD_TTS_LANGUAGE_CODE,
+        GOOGLE_CLOUD_TTS_BCP_DIRECTORY_PATH,
+        GOOGLE_CLOUD_TTS_BCP_FILE_NAME,
         GOOGLE_CLOUD_TTS_VOICE_GENDER,
         GOOGLE_CLOUD_TTS_KHZ,
         GOOGLE_CLOUD_TTS_CHUNK_SAMPLES,
 
         // Google Cloud STT Key
-        GOOGLE_CLOUD_STT_LANGUAGE_CODE,
+        GOOGLE_CLOUD_STT_BCP_DIRECTORY_PATH,
+        GOOGLE_CLOUD_STT_BCP_FILE_NAME,
 
         // Picovoice Leopard Key
         PICOVOICE_LEOPARD_ACCESS_KEY_PATH,
@@ -136,13 +138,15 @@ namespace
         "MinConfidence",
 
         // Google Cloud TTS Key
-        "LanguageCode",
+        "BCPDirectoryPath",
+        "BCPFileName",
         "VoiceGender",
         "KHz",
         "ChunkSamples",
 
         // Google Cloud STT Key
-        "LanguageCode",
+        "BCPDirectoryPath",
+        "BCPFileName",
 
         // Picovoice Leopard Key
         "AccessKeyPath",
@@ -250,7 +254,8 @@ Configuration::Configuration() noexcept
 #if MRH_SPEECHD_TTS_API_GGOGLE_CLOUD > 0
             if (Block.GetName().compare(p_Identifier[BLOCK_GOOGLE_CLOUD_TTS]) == 0)
             {
-                c_GoogleCloudTTS.s_LanguageCode = Block.GetValue(p_Identifier[GOOGLE_CLOUD_TTS_LANGUAGE_CODE]);
+                c_GoogleCloudTTS.s_BCPDirPath = Block.GetValue(p_Identifier[GOOGLE_CLOUD_TTS_BCP_DIRECTORY_PATH]);
+                c_GoogleCloudTTS.s_BCPFileName = Block.GetValue(p_Identifier[GOOGLE_CLOUD_TTS_BCP_FILE_NAME]);
                 c_GoogleCloudTTS.u8_VoiceGender = static_cast<MRH_Uint8>(std::stoull(Block.GetValue(p_Identifier[GOOGLE_CLOUD_TTS_VOICE_GENDER])));
                 c_GoogleCloudTTS.u32_KHz = static_cast<MRH_Uint32>(std::stoull(Block.GetValue(p_Identifier[GOOGLE_CLOUD_TTS_KHZ])));
                 c_GoogleCloudTTS.u32_ChunkSamples = static_cast<MRH_Uint32>(std::stoull(Block.GetValue(p_Identifier[GOOGLE_CLOUD_TTS_CHUNK_SAMPLES])));
@@ -266,7 +271,8 @@ Configuration::Configuration() noexcept
 #if MRH_SPEECHD_STT_API_GGOGLE_CLOUD > 0
             if (Block.GetName().compare(p_Identifier[BLOCK_GOOGLE_CLOUD_STT]) == 0)
             {
-                c_GoogleCloudSTT.s_LanguageCode = Block.GetValue(p_Identifier[GOOGLE_CLOUD_STT_LANGUAGE_CODE]);
+                c_GoogleCloudSTT.s_BCPDirPath = Block.GetValue(p_Identifier[GOOGLE_CLOUD_STT_BCP_DIRECTORY_PATH]);
+                c_GoogleCloudSTT.s_BCPFileName = Block.GetValue(p_Identifier[GOOGLE_CLOUD_STT_BCP_FILE_NAME]);
 
                 continue;
             }

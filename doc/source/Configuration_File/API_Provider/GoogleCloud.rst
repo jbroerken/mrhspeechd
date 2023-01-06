@@ -19,8 +19,12 @@ The GoogleCloudTTS block stores the following values:
 
     * - Key
       - Description
-    * - LanguageCode
-      - The BCP-47 language code used for synthesizing output.
+    * - BCPDirectoryPath
+      - The directory containing all localised directories for
+        BCP-47 locale files.
+    * - BCPFileName
+      - The locale file containing the BCP-47 language code used for
+        synthesizing output.
     * - VoiceGender
       - 0 for female, 1 for male.
     * - KHz
@@ -38,8 +42,12 @@ The GoogleCloudSTT block stores the following values:
 
     * - Key
       - Description
-    * - LanguageCode
-      - The language code used for transcribing input.
+    * - BCPDirectoryPath
+      - The directory containing all localised directories for
+        BCP-47 locale files.
+    * - BCPFileName
+      - The locale file containing the BCP-47 language code used for
+        transcribing input.
         
 
 Example
@@ -50,13 +58,15 @@ configuration file:
 .. code-block:: c
 
     <GoogleCloudTTS>{
-        <LanguageCode><en>
+        <BCPDirectoryPath></usr/share/mrh/speechd/gcloud/>
+        <BCPFileName><locale.conf>
         <VoiceGender><0>
         <KHz><16000>
         <ChunkSamples><2048>
     }
 
     <GoogleCloudSTT>{
-        <LanguageCode><en>
+        <BCPDirectoryPath></usr/share/mrh/speechd/gcloud/>
+        <BCPFileName><locale.conf>
     }
     

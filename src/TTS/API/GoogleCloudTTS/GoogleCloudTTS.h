@@ -40,7 +40,7 @@ public:
      *  \param c_Configuration The configuration to setup with.
      */
 
-    GoogleCloudTTS(Configuration::GoogleCloudTTS const& c_Configuration) noexcept;
+    GoogleCloudTTS(Configuration::GoogleCloudTTS const& c_Configuration);
 
     /**
      *  Default destructor.
