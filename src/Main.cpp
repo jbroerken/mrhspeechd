@@ -41,7 +41,7 @@
     #define MRH_SPEECHD_DAEMON_MODE 0
 #endif
 #define MRH_SPEECHD_SIGNAL_START_RECORDING SIGUSR1
-#define MRH_SPEECHD_SIGNAL_STOP_RECORDING SIGUSR2
+#define MRH_SPEECHD_SIGNAL_STOP_AUDIO SIGUSR2
 
 // Namespace
 namespace
@@ -308,14 +308,15 @@ int main(int argc, const char* argv[])
         }
         
         // Was a recording signal received?
-        if (i_LastSignal == MRH_SPEECHD_SIGNAL_STOP_RECORDING)
+        if (i_LastSignal == MRH_SPEECHD_SIGNAL_STOP_AUDIO)
         {
-            c_Logger.Log(Logger::INFO, "Recording stop signal received.",
+            c_Logger.Log(Logger::INFO, "Audio stop signal received.",
                          "Main.cpp", __LINE__);
 
             p_Recorder->Stop();
-            i_LastSignal = -1;
+            p_Player->Stop();
 
+            i_LastSignal = -1;
             continue;
         }
         else if (i_LastSignal == MRH_SPEECHD_SIGNAL_START_RECORDING)
@@ -342,7 +343,6 @@ int main(int argc, const char* argv[])
             }
 
             i_LastSignal = -1;
-
             continue;
         }
 
