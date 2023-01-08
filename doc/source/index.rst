@@ -16,3 +16,4 @@ support as many configurations as possible.
    Audio_Format/Audio_Format
    API_Providers/API_Providers
    Configuration_File/Configuration_File
+   Signals/Signals
