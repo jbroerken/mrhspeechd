@@ -82,7 +82,7 @@ extern "C"
                 break;
 
             case MRH_SPEECHD_SIGNAL_START_RECORDING:
-            case MRH_SPEECHD_SIGNAL_STOP_RECORDING:
+            case MRH_SPEECHD_SIGNAL_STOP_AUDIO:
                 i_LastSignal = i_Signal;
                 p_Notifier->Notify(false);
                 break;
