@@ -24,11 +24,7 @@
 #include "./Configuration.h"
 #include "./Logger.h"
 
-// Pre-defined
-#ifndef MRH_SPEECHD_CONFIGURATION_PATH
-    #define MRH_SPEECHD_CONFIGURATION_PATH "/usr/share/mrh/speechd/speechd.conf"
-#endif
-
+// Namespace
 namespace
 {
     enum Identifier
@@ -160,11 +156,11 @@ namespace
 // Constructor / Destructor
 //*************************************************************************************
 
-Configuration::Configuration() noexcept
+Configuration::Configuration(std::string const& s_FilePath) noexcept
 {
     try
     {
-        MRH::BF::BlockFile c_File(MRH_SPEECHD_CONFIGURATION_PATH);
+        MRH::BF::BlockFile c_File(s_FilePath);
 
         for (auto& Block : c_File.l_Block)
         {

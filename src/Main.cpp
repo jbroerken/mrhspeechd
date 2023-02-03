@@ -34,6 +34,9 @@
 #include "./Revision.h"
 
 // Pre-defined
+#ifndef MRH_SPEECHD_CONFIGURATION_PATH
+    #define MRH_SPEECHD_CONFIGURATION_PATH "/usr/share/mrh/speechd/speechd.conf"
+#endif
 #ifndef MRH_SPEECHD_PID_FILE_PATH
     #define MRH_SPEECHD_PID_FILE_PATH "/tmp/mrh/PID_mrhspeechd"
 #endif
@@ -213,7 +216,7 @@ int main(int argc, const char* argv[])
     c_Logger.Log(Logger::INFO, "Creating components...",
                  "Main.cpp", __LINE__);
 
-    Configuration c_Configuration;
+    Configuration c_Configuration(MRH_SPEECHD_CONFIGURATION_PATH);
 
     std::shared_ptr<SpeechChecker> p_SpeechChecker;
     std::shared_ptr<Recorder> p_Recorder;

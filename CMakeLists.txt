@@ -40,7 +40,7 @@ option(TTS_API_GOOGLE_CLOUD "Enable text to speech conversion with Google Cloud"
 #  ------------
 #  General simple information about our project.
 ###
-project(mrhspeechd VERSION 1.0.0
+project(mrhspeechd VERSION 1.0.1
                    DESCRIPTION "MRH voice speech handling utility"
                    LANGUAGES CXX)
 

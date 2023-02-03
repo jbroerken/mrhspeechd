@@ -146,9 +146,11 @@ public:
 
     /**
      *  Default constructor.
+     *
+     *  \param s_FilePath The full path to the configuration file.
      */
 
-    Configuration() noexcept;
+    Configuration(std::string const& s_FilePath) noexcept;
 
     /**
      *  Default destructor.
